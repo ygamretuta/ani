@@ -15,7 +15,8 @@ import Button from "components/CustomButtons/Button.js";
 import Parallax from "components/Parallax/Parallax.js";
 // sections for this page
 import HeaderLinks from "components/Header/HeaderLinks.js";
-import SectionBasics from "./Sections/SectionBasics.js";
+// import SectionBasics from "./Sections/SectionBasics.js";
+import SectionHome from "./Sections/SectionHome.js";
 import SectionNavbars from "./Sections/SectionNavbars.js";
 import SectionTabs from "./Sections/SectionTabs.js";
 import SectionPills from "./Sections/SectionPills.js";
@@ -48,6 +49,12 @@ export default function Components(props) {
         {...rest}
       />
 
+      <div className={classNames(classes.main, classes.mainRaised)}>
+        <SectionHome>
+
+        </SectionHome>
+      </div>
+
       
       {/*
       <Parallax image={require("assets/img/bg4.jpg")}>
@@ -64,7 +71,7 @@ export default function Components(props) {
           </GridContainer>
         </div>
       </Parallax>
-      */}
+
 
       <div className={classNames(classes.main, classes.mainRaised)}>
         <SectionBasics />
@@ -87,6 +94,7 @@ export default function Components(props) {
         <SectionExamples />
         <SectionDownload />
       </div>
+      */}
       <Footer />
     </div>
   );
