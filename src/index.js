@@ -11,11 +11,15 @@ import LandingPage from "views/LandingPage/LandingPage.js";
 import ProfilePage from "views/ProfilePage/ProfilePage.js";
 import LoginPage from "views/LoginPage/LoginPage.js";
 
+// custom pages
+import GqlPage from "views/GqlPage/GqlPage.js";
+
 var hist = createBrowserHistory();
 
 ReactDOM.render(
   <Router history={hist}>
     <Switch>
+      <Route path="/gql-page" component={GqlPage} />
       <Route path="/landing-page" component={LandingPage} />
       <Route path="/profile-page" component={ProfilePage} />
       <Route path="/login-page" component={LoginPage} />

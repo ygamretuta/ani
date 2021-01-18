@@ -37,7 +37,7 @@ export default function SectionHome() {
               <img
                 style={{height: "180px", width: "100%", display: "block"}}
                 className={classes.imgCardTop}
-                src="..."
+                src="https://via.placeholder.com/350x180"
                 alt="Card-img-cap"
               />
               <CardBody>
@@ -47,10 +47,32 @@ export default function SectionHome() {
             </Card>
           </GridItem>
           <GridItem sm={4}>
-            <h1>Rar</h1>
+            <Card>
+              <img
+                style={{height: "180px", width: "100%", display: "block"}}
+                className={classes.imgCardTop}
+                src="https://via.placeholder.com/350x180"
+                alt="Card-img-cap"
+              />
+              <CardBody>
+                <h4 className={classes.cardTitle}>CardTitle</h4>
+                <p></p>
+              </CardBody>
+            </Card>
           </GridItem>
           <GridItem sm={4}>
-            <h1>Rar</h1>
+           <Card>
+              <img
+                style={{height: "180px", width: "100%", display: "block"}}
+                className={classes.imgCardTop}
+                src="https://via.placeholder.com/350x180"
+                alt="Card-img-cap"
+              />
+              <CardBody>
+                <h4 className={classes.cardTitle}>CardTitle</h4>
+                <p></p>
+              </CardBody>
+            </Card>
           </GridItem>
         </GridContainer>
       </div>
