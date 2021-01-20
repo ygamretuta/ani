@@ -14,17 +14,26 @@ import LoginPage from "views/LoginPage/LoginPage.js";
 // custom pages
 import GqlPage from "views/GqlPage/GqlPage.js";
 
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client"; 
+
 var hist = createBrowserHistory();
+
+const client = new ApolloClient({
+  uri: 'https://graphql.anilist.co',
+  cache: new InMemoryCache()
+});
 
 ReactDOM.render(
   <Router history={hist}>
-    <Switch>
-      <Route path="/gql-page" component={GqlPage} />
-      <Route path="/landing-page" component={LandingPage} />
-      <Route path="/profile-page" component={ProfilePage} />
-      <Route path="/login-page" component={LoginPage} />
-      <Route path="/" component={Components} />
-    </Switch>
+    <ApolloProvider client={client}>
+      <Switch>
+        <Route path="/gql-page" component={GqlPage} />
+        <Route path="/landing-page" component={LandingPage} />
+        <Route path="/profile-page" component={ProfilePage} />
+        <Route path="/login-page" component={LoginPage} />
+        <Route path="/" component={Components} />
+      </Switch>
+    </ApolloProvider>
   </Router>,
   document.getElementById("root")
 );
