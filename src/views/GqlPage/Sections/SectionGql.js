@@ -3,11 +3,24 @@ import React, {useState} from "react";
 import { gql } from '@apollo/client';
 import { useLazyQuery } from '@apollo/client';
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, styled } from "@material-ui/core";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+import SearchBar from "material-ui-search-bar";
+
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+
 import styles from "assets/jss/material-kit-react/views/componentsSections/basicsStyle.js";
+import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js";
+import { cardTitle } from "assets/jss/material-kit-react.js";
+
+const MainSearchBar = styled(SearchBar)({
+  marginTop: 20,
+});
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -17,7 +30,9 @@ const useStyles = makeStyles(theme => ({
   paginationButton:{
     marginRight: 10  
   },
-  ...styles
+  ...styles,
+  ...imagesStyles,
+  cardTitle
 }));
 
 const GET_ANIMES = gql`
@@ -59,7 +74,7 @@ export default function SectionGql() {
 
   const [getAnimes, {loading, error, data}] = useLazyQuery(GET_ANIMES, {
     onCompleted: data => {
-      console.log('Last Page');
+      console.table(data);
       setLastPage(data.Page.pageInfo.lastPage);
     }
   });
@@ -81,9 +96,13 @@ export default function SectionGql() {
   }
 
   function handleSearch() {
+    console.log(`Searching For: ${search}`);
+
     getAnimes({
-      search: search,
-      perPage: 6
+      variables: {
+        search: search,
+        perPage: 20
+      }
     });
   }
 
@@ -103,6 +122,32 @@ export default function SectionGql() {
         <div className={classes.title}>
           <h2>GraphQL</h2>
         </div>
+
+        <GridContainer>
+          <GridItem>
+            <MainSearchBar
+              value={search}
+              onChange={(newSearch) => setSearch(newSearch)}
+              onRequestSearch={() => handleSearch()}
+              onCancelSearch={() => handleCancel()}
+            />
+          </GridItem>
+
+          {data && data.Page.media.map((anime) =>
+            <GridItem sm={3} key={`grid-${anime.id}`}>
+              <Card>
+                <img style={{height: "250px", widht: "100%", display: "block"}}
+                  className={classes.imgCardTop}
+                  src={anime.coverImage.extraLarge}
+                  alt={anime.title.english || anime.title.romaji}
+                />
+                <CardBody>
+                  <h4 className={classes.cardTitle}>{anime.title.english || anime.title.romaji}</h4>
+                </CardBody>
+              </Card>
+            </GridItem>
+          )}
+        </GridContainer>
       </div>
     </div>      
   ); 
