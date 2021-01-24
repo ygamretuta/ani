@@ -6,6 +6,9 @@ import { useLazyQuery } from '@apollo/client';
 import { makeStyles, styled } from "@material-ui/core";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Pagination from '@material-ui/lab/Pagination';
+import Box from '@material-ui/core/Box';
+
 
 import SearchBar from "material-ui-search-bar";
 
@@ -28,7 +31,14 @@ const useStyles = makeStyles(theme => ({
     color: '#fff'
   },
   paginationButton:{
-    marginRight: 10  
+    marginRight: 10,
+  },
+  pagination: {
+    '& > *' : {
+      marginTop: theme.spacing(4),
+    },
+    display: 'flex',
+    justifyContent: 'center'
   },
   ...styles,
   ...imagesStyles,
@@ -83,7 +93,7 @@ export default function SectionGql() {
     setSearch('');
   }
 
-  function handlePageGo(pageNumber) {
+  function handlePageGo(event, pageNumber) {
     setCurrentPage(pageNumber);
 
     getAnimes({
@@ -101,14 +111,14 @@ export default function SectionGql() {
     getAnimes({
       variables: {
         search: search,
-        perPage: 20
+        perPage: 6
       }
     });
   }
 
   if (loading) {
     return(
-      <Backdrop className={classes.backrop} open={true}>
+      <Backdrop className={classes.backdrop} open={true}>
         <CircularProgress color="inherit"/>
       </Backdrop>
     );
@@ -148,6 +158,12 @@ export default function SectionGql() {
             </GridItem>
           )}
         </GridContainer>
+  
+        {data &&
+          <Box className={classes.pagination}>
+            <Pagination count={lastPage} page={currentPage} onChange={handlePageGo} />
+          </Box>
+        }
       </div>
     </div>      
   ); 
