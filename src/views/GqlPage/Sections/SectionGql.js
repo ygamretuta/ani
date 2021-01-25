@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import { gql } from '@apollo/client';
 import { useLazyQuery } from '@apollo/client';
@@ -7,10 +7,12 @@ import { makeStyles, styled } from "@material-ui/core";
 import Backdrop from "@material-ui/core/Backdrop";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Pagination from '@material-ui/lab/Pagination';
+import PaginationItem from '@material-ui/lab/PaginationItem';
 import Box from '@material-ui/core/Box';
 
-
 import SearchBar from "material-ui-search-bar";
+
+import { Link, useHistory, useLocation } from 'react-router-dom';
 
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
@@ -78,9 +80,12 @@ const GET_ANIMES = gql`
 export default function SectionGql() {
   const classes = useStyles();
 
-  const [search, setSearch] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
+  const [search, setSearch] = useState(''),
+    [currentPage, setCurrentPage] = useState(1),
+    [lastPage, setLastPage] = useState(1);
+
+
+  let history = useHistory();
 
   const [getAnimes, {loading, error, data}] = useLazyQuery(GET_ANIMES, {
     onCompleted: data => {
@@ -89,31 +94,40 @@ export default function SectionGql() {
     }
   });
 
+  const location = useLocation();
+  
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    
+    setSearch(params.get('search') || '');
+    setCurrentPage(+params.get('page') ?? 1)
+
+  }, []);
+
+  useEffect(()=> {
+    console.log('Search Changed!');
+    console.table(search);
+    
+    getAnimes({
+      variables: {
+        search: search,
+        page: currentPage,
+        perPage: 6
+      },
+    });
+  }, [search, currentPage]);
+
   function handleCancel() {
     setSearch('');
   }
 
   function handlePageGo(event, pageNumber) {
     setCurrentPage(pageNumber);
-
-    getAnimes({
-      variables: {
-        search: search,
-        page: pageNumber,
-        perPage: 6
-      }
-    });
   }
 
-  function handleSearch() {
-    console.log(`Searching For: ${search}`);
-
-    getAnimes({
-      variables: {
-        search: search,
-        perPage: 6
-      }
-    });
+  function handleSearch(newKey) {
+    setSearch(newKey)
+    history.push(`/gql-page?search=${newKey}`)
   }
 
   if (loading) {
@@ -137,8 +151,7 @@ export default function SectionGql() {
           <GridItem>
             <MainSearchBar
               value={search}
-              onChange={(newSearch) => setSearch(newSearch)}
-              onRequestSearch={() => handleSearch()}
+              onRequestSearch={(newKey) => handleSearch(newKey)}
               onCancelSearch={() => handleCancel()}
             />
           </GridItem>
@@ -161,7 +174,18 @@ export default function SectionGql() {
   
         {data &&
           <Box className={classes.pagination}>
-            <Pagination count={lastPage} page={currentPage} onChange={handlePageGo} />
+            <Pagination 
+              count={lastPage} 
+              page={currentPage} 
+              onChange={handlePageGo} 
+              renderItem={(item)=> (
+                <PaginationItem
+                  component={Link}
+                  to={`/gql-page?search=${search}&page=${item.page}`}
+                  {...item}
+                />
+              )}  
+            />
           </Box>
         }
       </div>
