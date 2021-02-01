@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 
-import { gql } from '@apollo/client';
 import { useLazyQuery } from '@apollo/client';
 
 import { makeStyles, styled } from "@material-ui/core";
@@ -16,8 +15,12 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 
 import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
+
+import AnimeCard from "components/AnimeCard/AnimeCard.js";
+import AnimeDialog from "components/AnimeDialog/AnimeDialog.js";
+
+import GET_ANIMES from 'queries/GetAnimes.js';
+import GET_ANIME from 'queries/GetAnime.js';
 
 import styles from "assets/jss/material-kit-react/views/componentsSections/basicsStyle.js";
 import imagesStyles from "assets/jss/material-kit-react/imagesStyles.js";
@@ -42,48 +45,24 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center'
   },
+  card: {
+    marginBottom: "30px",
+    marginTop: "30px",
+  },
   ...styles,
   ...imagesStyles,
   cardTitle
 }));
-
-const GET_ANIMES = gql`
-  query ($id: Int, $page: Int, $perPage: Int, $search: String) {
-    Page(page: $page, perPage: $perPage) {
-      pageInfo {
-        total
-        currentPage
-        lastPage
-        hasNextPage
-        perPage
-      }
-      media (id: $id, type: ANIME, search: $search) {
-        id
-        title {
-            english
-            romaji
-        }
-        startDate{
-            year
-            month
-            day
-        }
-        description
-        averageScore
-        coverImage {
-            extraLarge
-        }
-      }
-    }
-  }`;
 
 export default function SectionGql() {
   const classes = useStyles();
 
   const [search, setSearch] = useState(''),
     [currentPage, setCurrentPage] = useState(1),
-    [lastPage, setLastPage] = useState(1);
-
+    [lastPage, setLastPage] = useState(1),
+    [dialogOpen, setDialogOpen] = useState(false),
+    [currentId, setCurrentId] = useState(undefined),
+    [animeCard, setAnimeCard] = useState(undefined);
 
   let history = useHistory();
 
@@ -94,28 +73,50 @@ export default function SectionGql() {
     }
   });
 
+  const [getAnime, {animeLoading, animeError, anime}] = useLazyQuery(GET_ANIME, {
+    onCompleted: anime => {
+      setDialogOpen(true);
+      setAnimeCard(anime);
+    }
+  });
+
   const location = useLocation();
   
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    
-    setSearch(params.get('search') || '');
-    setCurrentPage(+params.get('page') ?? 1)
 
+    if (params.get('search')) {
+      setSearch(params.get('search') || '');
+
+      if (params.get('page')) {
+        setCurrentPage(+params.get('page') ?? 1);
+      }
+    }
   }, []);
 
   useEffect(()=> {
-    console.log('Search Changed!');
-    console.table(search);
-    
-    getAnimes({
-      variables: {
-        search: search,
-        page: currentPage,
-        perPage: 6
-      },
-    });
+    if (search) {
+      getAnimes({
+        variables: {
+          search: search,
+          page: currentPage,
+          perPage: 6
+        },
+      });
+      console.log(data);
+    }
+
   }, [search, currentPage]);
+
+  useEffect(() => {
+    if (currentId) {
+      getAnime({
+        variables: {
+          id: currentId,
+        },
+      });
+    }
+  }, [currentId]);
 
   function handleCancel() {
     setSearch('');
@@ -130,7 +131,16 @@ export default function SectionGql() {
     history.push(`/gql-page?search=${newKey}`)
   }
 
-  if (loading) {
+  function handleCardClick(id) {
+    console.log(`Card clicked with index ${id}`);
+    setCurrentId(id);
+  }
+
+  function handleDialogClose() {
+    setDialogOpen(false);
+  }
+
+  if (loading || animeLoading) {
     return(
       <Backdrop className={classes.backdrop} open={true}>
         <CircularProgress color="inherit"/>
@@ -138,7 +148,7 @@ export default function SectionGql() {
     );
   }
 
-  if (error ) return <p>Error!</p>
+  if (error || animeError) return <p>Error!</p>
 
   return(
     <div className={classes.sections}>
@@ -158,16 +168,7 @@ export default function SectionGql() {
 
           {data && data.Page.media.map((anime) =>
             <GridItem sm={3} key={`grid-${anime.id}`}>
-              <Card>
-                <img style={{height: "250px", widht: "100%", display: "block"}}
-                  className={classes.imgCardTop}
-                  src={anime.coverImage.extraLarge}
-                  alt={anime.title.english || anime.title.romaji}
-                />
-                <CardBody>
-                  <h4 className={classes.cardTitle}>{anime.title.english || anime.title.romaji}</h4>
-                </CardBody>
-              </Card>
+              <AnimeCard anime={anime} handleCardClick={handleCardClick}/>
             </GridItem>
           )}
         </GridContainer>
@@ -188,6 +189,8 @@ export default function SectionGql() {
             />
           </Box>
         }
+
+        <AnimeDialog onClose={handleDialogClose} open={dialogOpen} anime={animeCard} />
       </div>
     </div>      
   ); 
