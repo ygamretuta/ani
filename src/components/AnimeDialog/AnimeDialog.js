@@ -7,8 +7,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-
 import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles(styles);
 
@@ -28,6 +28,9 @@ export default function AnimeDialog(props) {
         <>
           <DialogTitle>{anime.Media.title.romaji}</DialogTitle>
           <DialogContent>
+            <Box>
+              {anime.Media.trailer.thumbnail}
+            </Box>
             <Typography>
               {anime.Media.description}
             </Typography>

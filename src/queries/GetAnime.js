@@ -14,6 +14,11 @@ const GET_ANIME = gql`
         day
       }
       description
+      trailer {
+        id
+        thumbnail
+        site
+      }
       averageScore
       coverImage {
         extraLarge

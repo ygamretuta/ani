@@ -132,11 +132,12 @@ export default function SectionGql() {
   }
 
   function handleCardClick(id) {
-    console.log(`Card clicked with index ${id}`);
+    setDialogOpen(true);
     setCurrentId(id);
   }
 
   function handleDialogClose() {
+    setAnimeCard(undefined);
     setDialogOpen(false);
   }
 
