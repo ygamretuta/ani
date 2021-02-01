@@ -137,7 +137,6 @@ export default function SectionGql() {
   }
 
   function handleDialogClose() {
-    setAnimeCard(undefined);
     setDialogOpen(false);
   }
 

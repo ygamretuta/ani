@@ -9,6 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Rating from '@material-ui/lab/Rating';
 
 const useStyles = makeStyles(styles);
 
@@ -29,7 +30,14 @@ export default function AnimeDialog(props) {
           <DialogTitle>{anime.Media.title.romaji}</DialogTitle>
           <DialogContent>
             <Box>
-              {anime.Media.trailer.thumbnail}
+            </Box>
+            <Box>
+            <Rating
+              name="simple-controlled"
+              value={(anime.Media.averageScore / 20)}
+              readOnly
+              max={5}
+            />{anime.Media.averageScore / 20}
             </Box>
             <Typography>
               {anime.Media.description}
