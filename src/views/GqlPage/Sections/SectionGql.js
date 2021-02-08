@@ -75,6 +75,9 @@ export default function SectionGql() {
 
   const [getAnime, {animeLoading, animeError, anime}] = useLazyQuery(GET_ANIME, {
     onCompleted: anime => {
+      console.log('Queried anime!');
+      console.log(anime.reviews);
+      console.table(anime);
       setDialogOpen(true);
       setAnimeCard(anime);
     }
@@ -100,7 +103,7 @@ export default function SectionGql() {
         variables: {
           search: search,
           page: currentPage,
-          perPage: 6
+          perPage: 16
         },
       });
       console.log(data);

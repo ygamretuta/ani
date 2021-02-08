@@ -23,6 +23,23 @@ const GET_ANIME = gql`
       coverImage {
         extraLarge
       }
+      genres
+      reviews(page: 1, perPage: 3) {
+        edges {
+          node {
+            id
+            summary
+            body(asHtml: false)
+            score
+            user {
+              name
+              avatar {
+                medium
+              }
+            }
+          }
+        }
+      }
     }
   }
 `;
