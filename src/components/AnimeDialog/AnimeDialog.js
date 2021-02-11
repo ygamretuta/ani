@@ -1,5 +1,5 @@
 import React from "react";
-import { createStyles, makeStyles, withStyles, WithStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, withStyles, Theme } from "@material-ui/core/styles";
 import styles from "./styles.js";
 import PropTypes from "prop-types";
 
@@ -31,6 +31,18 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       backgroundColor: theme.palette.background.paper
     },
+    genreTags: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      '& > *': {
+        margin: theme.spacing(0.5),
+      },
+    },
+    summaryText: {
+      padding: theme.spacing(1),
+      paddingLeft: 0,
+      paddingRight: 0
+    }
   }),
   styles);
 
@@ -51,6 +63,7 @@ const DialogTitle = withStyles(styles)((props) => {
 const DialogContent = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
+    paddingTop: 0,
   },
 }))(MuiDialogContent);
 
@@ -82,7 +95,7 @@ export default function AnimeDialog(props) {
     <Dialog onClose={props.onClose} open={props.open}>
       {anime ? (
         <>
-          <DialogTitle onClose={props.onClose}>{anime.Media.title.romaji}</DialogTitle>
+          <DialogTitle onClose={props.onClose}>{anime.Media.title.romaji}({anime.Media.startDate.year})</DialogTitle>
           <DialogContent dividers>
             <Box className={classes.ratingBox}>
               <Rating
@@ -95,7 +108,7 @@ export default function AnimeDialog(props) {
               {anime.Media.averageScore / 20}
             </Box>
 
-            <Box>
+            <Box className={classes.genreTags}>
               {genres.length > 0 && genres.map((genre, index) => 
                 <Chip 
                   label={genre} 
@@ -110,12 +123,14 @@ export default function AnimeDialog(props) {
               )}
             </Box>
             
-            <ShowMoreText
-              lines={3}
-              more="Read More"
-              expanded={false}>
-              {anime.Media.description}
-            </ShowMoreText>
+            <Box className={classes.summaryText}>
+              <ShowMoreText
+                lines={3}
+                more="Read More"
+                expanded={false}>
+                {anime.Media.description}
+              </ShowMoreText>
+            </Box>
             
 
             <Divider variant="inset"></Divider>

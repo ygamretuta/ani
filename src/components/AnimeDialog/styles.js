@@ -19,7 +19,7 @@ const styles = (theme) => ({
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: theme.palette.grey[500],
-  }
+  },
 });
   
 export default styles;
