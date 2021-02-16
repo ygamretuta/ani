@@ -28,3 +28,4 @@ yarn-error.log*
 *.css
 firebase-debug.log
 .firebase/hosting.cHVibGlj.cache
+.vscode/settings.json
