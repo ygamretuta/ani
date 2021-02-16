@@ -4,9 +4,7 @@ import React from "react";
 import classNames from "classnames";
 
 import { makeStyles } from "@material-ui/core";
-
-import Header from "components/Header/Header.js";
-import HeaderLinks from "components/Header/HeaderLinks.js";
+import AnimeHeader from "components/AnimeHeader";
 import SectionGql from "./Sections/SectionGql.js";
 
 import styles from "assets/jss/material-kit-react/views/gqlPage.js";
@@ -23,16 +21,7 @@ export default function GqlPage(props) {
 
   return(
     <div>
-      <Header
-        brand="Ygam's Portfolio Site"
-        rightLinks={<HeaderLinks />}
-        fixed
-        changeColorOnScroll={{
-          height: 400,
-          color: "white"
-        }}
-        {...rest}
-      />
+      <AnimeHeader />
 
       <div className={classNames(classes.main, classes.mainRaised)}>
         <SectionGql></SectionGql>

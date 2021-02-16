@@ -13,6 +13,7 @@ import LoginPage from "views/LoginPage/LoginPage.js";
 
 // custom pages
 import GqlPage from "views/GqlPage/GqlPage.js";
+import FirebaseDb from "views/FirebaseDb";
 
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client"; 
 
@@ -27,6 +28,7 @@ ReactDOM.render(
   <Router history={hist}>
     <ApolloProvider client={client}>
       <Switch>
+        <Route path="/firedb" component={FirebaseDb} />
         <Route path="/gql-page" component={GqlPage} />
         <Route path="/landing-page" component={LandingPage} />
         <Route path="/profile-page" component={ProfilePage} />
